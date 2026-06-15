@@ -1,6 +1,17 @@
-# CMMC Controls to AZ-104 Mapping
+# CMMC Controls → Azure Implementation (with AZ-104 mapping)
 
-This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** controls to **Microsoft AZ-104 (Azure Administrator)** exam skills and Azure services. It serves as a study guide, compliance reference, and bridge between DoD cybersecurity requirements and Azure implementation.
+This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** controls to the **Microsoft Azure resources** that implement them, the **evidence** that proves each control is met, and the **AZ-104 (Azure Administrator)** exam skills involved. It bridges DoD cybersecurity requirements and real Azure configuration.
+
+## Who Is This For?
+
+| Audience | Start here | What you get |
+|----------|-----------|--------------|
+| 🛡️ **Security auditors & assessors** | [docs/for-auditors.md](docs/for-auditors.md) + [`audit/assessment-tracker.csv`](audit/assessment-tracker.csv) | A complete assessment workflow, a fillable per-practice tracker, a POA&M template, and the evidence required for each control |
+| 🏢 **Compliance / GRC teams** | [docs/demonstrating-compliance.md](docs/demonstrating-compliance.md) | How to implement each control in Azure and produce audit-ready evidence |
+| 👩‍💻 **Azure administrators** | [mappings/](mappings/) | Step-by-step Azure CLI configuration for each control |
+| 🎓 **AZ-104 students** | [csv/](csv/) | Each control tied to the AZ-104 exam domain and skill it reinforces |
+
+> **Note:** The AZ-104 columns are one lens, not the point. Every mapping and CSV works as a standalone CMMC-to-Azure compliance reference — auditors can ignore the exam columns entirely.
 
 ---
 
@@ -12,8 +23,9 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 ├── docs/
 │   ├── overview.md                  # CMMC & AZ-104 background
 │   ├── how-to-use.md                # How to use this mapping
-│   ├── azure-services-reference.md  # Quick reference of relevant Azure services
-│   └── demonstrating-compliance.md  # Evidence & artifacts to prove each control
+│   ├── for-auditors.md              # Assessment workflow for auditors/assessors
+│   ├── demonstrating-compliance.md  # Evidence & artifacts to prove each control
+│   └── azure-services-reference.md  # Quick reference of relevant Azure services
 ├── mappings/
 │   ├── level1/                      # CMMC Level 1 (17 practices)
 │   │   ├── AC-access-control.md
@@ -41,6 +53,11 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 ├── csv/
 │   ├── cmmc-level1-az104-mapping.csv
 │   └── cmmc-level2-az104-mapping.csv
+├── audit/                           # Auditor working artifacts
+│   ├── assessment-tracker.csv       # Fillable per-practice assessment worksheet
+│   └── poam-template.csv            # Plan of Action & Milestones template
+├── scripts/
+│   └── build_assessment_tracker.py  # Regenerates the tracker from the mapping CSVs
 └── assets/
     └── cmmc-az104-overview-diagram.md
 ```
@@ -70,10 +87,11 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 
 ## How to Navigate
 
-- **Studying for AZ-104?** → Start with [docs/how-to-use.md](docs/how-to-use.md) and use the CSVs in `/csv/` to find which exam topics align with each CMMC control.
+- **Auditing or assessing an environment?** → Start with [docs/for-auditors.md](docs/for-auditors.md), then work from [`audit/assessment-tracker.csv`](audit/assessment-tracker.csv) and log gaps in [`audit/poam-template.csv`](audit/poam-template.csv).
+- **Need to prove a control is met?** → See [docs/demonstrating-compliance.md](docs/demonstrating-compliance.md) for the exact evidence and artifacts per control.
 - **Implementing CMMC compliance in Azure?** → Browse `/mappings/` by the relevant CMMC domain and level.
+- **Studying for AZ-104?** → Start with [docs/how-to-use.md](docs/how-to-use.md) and use the CSVs in `/csv/` to find which exam topics align with each CMMC control.
 - **Quick lookup?** → Use the CSV files — they are searchable and filterable.
-- **Preparing for an assessment?** → See [docs/demonstrating-compliance.md](docs/demonstrating-compliance.md) for the evidence and artifacts that prove each control is met.
 
 ---
 
