@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC × Azure × AZ-104 Mapper | Oshun2</title>
+<meta name="description" content="Interactive tool mapping CMMC 2.0 Level 1 & 2 controls to Azure resources and AZ-104 exam domains. Built for security engineers, auditors, and students.">
+<meta property="og:title" content="CMMC × Azure × AZ-104 Mapper">
+<meta property="og:description" content="Free interactive tool: CMMC 2.0 controls → Azure implementation → AZ-104 exam domain. Browse by control or by Azure service.">
+<meta property="og:url" content="https://oshun2.github.io/cmmc-to-az104">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2128;
+  --bg4: #22272e;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.2);
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #484f58;
+  --blue: #378ADD;
+  --blue-dim: rgba(55,138,221,0.15);
+  --blue-text: #79c0ff;
+  --green: #3fb950;
+  --green-dim: rgba(63,185,80,0.12);
+  --green-text: #56d364;
+  --amber: #d29922;
+  --amber-dim: rgba(210,153,34,0.12);
+  --amber-text: #e3b341;
+  --purple: #8957e5;
+  --purple-dim: rgba(137,87,229,0.12);
+  --purple-text: #bc8cff;
+  --l1-bg: rgba(55,138,221,0.13);
+  --l1-text: #79c0ff;
+  --l1-border: rgba(55,138,221,0.3);
+  --l2-bg: rgba(63,185,80,0.13);
+  --l2-text: #56d364;
+  --l2-border: rgba(63,185,80,0.3);
+  --radius: 6px;
+  --radius-lg: 10px;
+  --mono: 'DM Mono', 'Fira Code', monospace;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px;
+  gap: 1rem;
+}
+.nav-brand { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; }
+.nav-brand i { font-size: 18px; color: var(--blue-text); }
+.nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.nav-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--blue-dim); color: var(--blue-text); border: 1px solid var(--l1-border); white-space: nowrap; }
+.nav-link { font-size: 12px; color: var(--text2); text-decoration: none; }
+.nav-link:hover { color: var(--text); }
+.nav-link i { font-size: 14px; vertical-align: -2px; margin-right: 3px; }
+
+/* HERO */
+.hero { padding: 3.5rem 1.5rem 2.5rem; max-width: 900px; margin: 0 auto; text-align: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--blue-text);
+  background: var(--blue-dim); border: 1px solid var(--l1-border);
+  border-radius: 20px; padding: 3px 11px; margin-bottom: 1.25rem;
+  font-family: var(--mono);
+}
+.hero h1 { font-size: 32px; font-weight: 500; color: var(--text); line-height: 1.25; margin-bottom: .875rem; }
+.hero h1 .accent { color: var(--blue-text); }
+.hero h1 .accent2 { color: var(--green-text); }
+.hero-sub { font-size: 15px; color: var(--text2); max-width: 580px; margin: 0 auto 2rem; line-height: 1.7; }
+.stat-row { display: flex; justify-content: center; gap: 0; margin-bottom: 2rem; flex-wrap: wrap; }
+.stat-item {
+  text-align: center; padding: 12px 24px;
+  border-right: 1px solid var(--border2);
+}
+.stat-item:last-child { border-right: none; }
+.stat-val { font-size: 24px; font-weight: 500; color: var(--text); font-family: var(--mono); }
+.stat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+.audience-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+.aud-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border2); color: var(--text2); background: var(--bg2);
+}
+.aud-pill i { font-size: 13px; }
+.hero-credit { font-size: 12px; color: var(--text3); }
+.hero-credit a { color: var(--text2); text-decoration: none; }
+.hero-credit a:hover { color: var(--blue-text); }
+
+/* MAIN */
+.main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+/* VIEW TOGGLE */
+.toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
+.view-toggle { display: flex; border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.vbtn {
+  font-size: 13px; font-family: var(--sans);
+  padding: 7px 16px; background: transparent; border: none;
+  color: var(--text2); cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.vbtn i { font-size: 14px; }
+.vbtn.active { background: var(--blue-dim); color: var(--blue-text); }
+.vbtn:not(.active):hover { background: var(--bg3); color: var(--text); }
+.toolbar-hint { font-size: 12px; color: var(--text3); font-style: italic; }
+
+/* CONTROLS */
+.filter-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.filter-row input, .filter-row select {
+  font-family: var(--sans); font-size: 13px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--radius); color: var(--text);
+  padding: 7px 11px; outline: none; transition: border-color 0.15s;
+}
+.filter-row input { flex: 1; min-width: 200px; }
+.filter-row input::placeholder { color: var(--text3); }
+.filter-row select { min-width: 130px; cursor: pointer; }
+.filter-row input:focus, .filter-row select:focus { border-color: var(--blue); }
+option { background: var(--bg2); }
+
+.chip-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip {
+  font-size: 11px; font-family: var(--mono);
+  padding: 3px 9px; border-radius: 20px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); cursor: pointer; transition: all 0.15s;
+}
+.chip:hover { border-color: var(--blue); color: var(--blue-text); background: var(--blue-dim); }
+.chip.on { background: var(--blue-dim); color: var(--blue-text); border-color: var(--l1-border); }
+
+.rcount { font-size: 11px; color: var(--text3); margin-bottom: 8px; font-family: var(--mono); }
+
+/* CARDS */
+.card-list { display: flex; flex-direction: column; gap: 6px; }
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 13px 15px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.card:hover { border-color: var(--border2); background: var(--bg3); }
+.card.open { border-color: rgba(55,138,221,0.35); background: var(--bg3); }
+
+.card-head { display: flex; align-items: flex-start; gap: 10px; }
+.badge {
+  font-size: 10px; font-weight: 500; font-family: var(--mono);
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+}
+.l1 { background: var(--l1-bg); color: var(--l1-text); border: 1px solid var(--l1-border); }
+.l2 { background: var(--l2-bg); color: var(--l2-text); border: 1px solid var(--l2-border); }
+
+.svc-icon {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: var(--blue-dim); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+  color: var(--blue-text); font-size: 16px;
+  border: 1px solid rgba(55,138,221,0.2);
+}
+
+.card-mid { flex: 1; min-width: 0; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; line-height: 1.4; }
+.card-sub { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-sub i { font-size: 12px; vertical-align: -1px; }
+.chev { color: var(--text3); font-size: 14px; transition: transform 0.2s; flex-shrink: 0; margin-top: 3px; }
+.card.open .chev { transform: rotate(180deg); }
+
+.detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.card.open .detail { display: block; }
+
+.dl {
+  font-size: 10px; font-weight: 500; color: var(--text3);
+  letter-spacing: .07em; text-transform: uppercase;
+  margin-bottom: 5px; margin-top: 12px;
+}
+.dl:first-child { margin-top: 0; }
+.dt { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.pill {
+  font-size: 11px; padding: 2px 9px; border-radius: 20px;
+  border: 1px solid rgba(55,138,221,0.2); color: var(--blue-text); background: var(--blue-dim);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.pill i { font-size: 11px; }
+
+.pill-ctrl {
+  font-size: 11px; font-family: var(--mono);
+  padding: 2px 8px; border-radius: 4px;
+  border: 1px solid var(--border2); color: var(--text2); background: var(--bg4);
+  cursor: pointer; transition: all 0.15s;
+}
+.pill-ctrl:hover { border-color: var(--blue); color: var(--blue-text); }
+.pill-ctrl.l1 { background: var(--l1-bg); color: var(--l1-text); border-color: var(--l1-border); }
+.pill-ctrl.l2 { background: var(--l2-bg); color: var(--l2-text); border-color: var(--l2-border); }
+
+/* AZ-104 domain pill */
+.az-pill {
+  font-size: 11px; padding: 2px 9px; border-radius: 20px;
+  border: 1px solid rgba(137,87,229,0.25);
+  color: var(--purple-text); background: var(--purple-dim);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* example box */
+.ex {
+  background: var(--bg); border-left: 2px solid var(--blue);
+  padding: 9px 12px; font-size: 13px; color: var(--text2); line-height: 1.65;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* key facts */
+.key-item {
+  font-size: 13px; color: var(--text2); line-height: 1.6;
+  padding: 5px 0; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.key-item:last-child { border-bottom: none; }
+.key-item i { font-size: 14px; color: var(--green-text); flex-shrink: 0; margin-top: 2px; }
+
+/* exam callout */
+.exam-callout {
+  background: var(--purple-dim);
+  border: 1px solid rgba(137,87,229,0.2);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-top: 4px;
+}
+.exam-callout i { font-size: 14px; color: var(--purple-text); flex-shrink: 0; margin-top: 1px; }
+.exam-callout-text { font-size: 12px; color: var(--purple-text); line-height: 1.5; }
+.exam-callout-label { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; opacity: .7; display: block; margin-bottom: 1px; }
+
+/* empty */
+.empty { text-align: center; padding: 3rem 0; color: var(--text3); font-size: 14px; }
+.empty i { font-size: 28px; display: block; margin: 0 auto 10px; opacity: .5; }
+
+.view-a, .view-b { display: none; }
+.view-a.show, .view-b.show { display: block; }
+
+/* FOOTER */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 12px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.footer a { color: var(--text2); text-decoration: none; }
+.footer a:hover { color: var(--blue-text); }
+.footer-links { display: flex; justify-content: center; gap: 1rem; margin-bottom: .5rem; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .nav { padding: 0 1rem; }
+  .hero { padding: 2rem 1rem 1.5rem; }
+  .hero h1 { font-size: 22px; }
+  .main { padding: 0 1rem 3rem; }
+  .stat-item { padding: 10px 14px; }
+  .stat-val { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <i class="ti ti-shield-check"></i>
+    CMMC × Azure × AZ-104
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">v1.0 · Level 1 & 2</span>
+    <a class="nav-link" href="https://github.com/Oshun2/cmmc-to-az104" target="_blank">
+      <i class="ti ti-brand-github"></i>View on GitHub
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow"><i class="ti ti-certificate"></i> CMMC 2.0 · NIST SP 800-171 · AZ-104</div>
+  <h1>Map every CMMC control to<br><span class="accent">Azure resources</span> + <span class="accent2">AZ-104 domains</span></h1>
+  <p class="hero-sub">Interactive reference for engineers implementing CMMC compliance in Azure, auditors assessing controls, and students studying for AZ-104.</p>
+  <div class="stat-row">
+    <div class="stat-item"><div class="stat-val" id="hs1">0</div><div class="stat-lbl">CMMC controls</div></div>
+    <div class="stat-item"><div class="stat-val" id="hs2">0</div><div class="stat-lbl">Level 1</div></div>
+    <div class="stat-item"><div class="stat-val" id="hs3">0</div><div class="stat-lbl">Level 2</div></div>
+    <div class="stat-item"><div class="stat-val" id="hs4">0</div><div class="stat-lbl">Azure services</div></div>
+    <div class="stat-item"><div class="stat-val" id="hs5">0</div><div class="stat-lbl">AZ-104 domains</div></div>
+  </div>
+  <div class="audience-row">
+    <span class="aud-pill"><i class="ti ti-shield"></i> Security auditors</span>
+    <span class="aud-pill"><i class="ti ti-building"></i> GRC / compliance teams</span>
+    <span class="aud-pill"><i class="ti ti-terminal"></i> Azure administrators</span>
+    <span class="aud-pill"><i class="ti ti-school"></i> AZ-104 students</span>
+  </div>
+  <div class="hero-credit">
+    Built by <a href="https://oreedtech.com" target="_blank">Omani Reed</a> · Cloud Security Engineer ·
+    <a href="https://github.com/Oshun2/cmmc-to-az104" target="_blank">GitHub</a>
+  </div>
+</section>
+
+<main class="main">
+
+  <div class="toolbar">
+    <div class="view-toggle">
+      <button class="vbtn active" id="btn-a" onclick="switchView('a')">
+        <i class="ti ti-lock"></i> Browse by control
+      </button>
+      <button class="vbtn" id="btn-b" onclick="switchView('b')">
+        <i class="ti ti-cloud"></i> Browse by Azure service
+      </button>
+    </div>
+    <div class="toolbar-hint" id="toolbar-hint">Click any control to expand guidance + AZ-104 mapping</div>
+  </div>
+
+  <!-- VIEW A: BY CONTROL -->
+  <div class="view-a show" id="view-a">
+    <div class="filter-row">
+      <input type="text" id="qa" placeholder="Search controls, practices, Azure services, AZ-104..." oninput="renderA()">
+      <select id="lfa" onchange="renderA()">
+        <option value="">All levels</option>
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+      </select>
+      <select id="dfa" onchange="renderA()"><option value="">All domains</option></select>
+      <select id="aza" onchange="renderA()"><option value="">All AZ-104 domains</option></select>
+    </div>
+    <div class="chip-row" id="chips-a"></div>
+    <div class="rcount" id="rca"></div>
+    <div class="card-list" id="list-a"></div>
+  </div>
+
+  <!-- VIEW B: BY AZURE SERVICE -->
+  <div class="view-b" id="view-b">
+    <div class="filter-row">
+      <input type="text" id="qb" placeholder="Search services, descriptions, controls..." oninput="renderB()">
+      <select id="catb" onchange="renderB()"><option value="">All categories</option></select>
+    </div>
+    <div class="chip-row" id="chips-b"></div>
+    <div class="rcount" id="rcb"></div>
+    <div class="card-list" id="list-b"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="https://github.com/Oshun2/cmmc-to-az104" target="_blank"><i class="ti ti-brand-github" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>GitHub Repo</a>
+    <a href="https://oreedtech.com" target="_blank">oreedtech.com</a>
+    <a href="https://github.com/Oshun2/cmmc-to-az104/blob/main/audit/assessment-tracker.csv" target="_blank">Assessment Tracker CSV</a>
+    <a href="https://github.com/Oshun2/cmmc-to-az104/blob/main/docs/for-auditors.md" target="_blank">Auditor Guide</a>
+  </div>
+  <p>Content based on CMMC 2.0 Model and Microsoft Azure documentation. Not affiliated with DoD or Microsoft. For educational use.</p>
+</footer>
+
+<script>
+const AZ104_DOMAINS = {
+  "Identities & Governance": "Manage Azure Identities & Governance (20–25%)",
+  "Storage": "Implement & Manage Storage (15–20%)",
+  "Compute": "Deploy & Manage Azure Compute (20–25%)",
+  "Networking": "Implement & Manage Virtual Networking (15–20%)",
+  "Monitor": "Monitor & Maintain Azure Resources (10–15%)"
+};
+
+const CONTROLS = [
+  {id:"AC.L1-3.1.1",level:1,domain:"Access Control",practice:"Limit system access to authorized users, processes, and devices",az104:["Identities & Governance"],azure:["Microsoft Entra ID","Conditional Access","Azure RBAC"],guidance:"Enforce identity-based access using Entra ID. Assign roles with least-privilege RBAC. Use Conditional Access to restrict by device compliance, location, and user risk.",example:"Configure Conditional Access to block non-compliant devices. Scope RBAC role assignments to only authorized personnel per resource group.",examNote:"AZ-104 tests Entra ID user/group management, RBAC role assignment, and Conditional Access policy creation under the Identities & Governance domain."},
+  {id:"AC.L1-3.1.2",level:1,domain:"Access Control",practice:"Limit access to types of transactions and functions authorized users are permitted to execute",az104:["Identities & Governance"],azure:["Azure RBAC","Azure Policy","Privileged Identity Management"],guidance:"Use Azure RBAC to restrict what actions users can perform. Apply deny assignments and Azure Policy to enforce allowed operations. Use PIM for just-in-time privileged access.",example:"Assign a developer Contributor scoped to a specific resource group. Require PIM approval before activating Owner-level access.",examNote:"AZ-104 covers RBAC custom role creation and Azure Policy assignment — core skills under Identities & Governance."},
+  {id:"AC.L2-3.1.3",level:2,domain:"Access Control",practice:"Control the flow of CUI in accordance with approved authorizations",az104:["Identities & Governance","Networking"],azure:["Microsoft Purview","Azure Private Endpoints","Azure Information Protection"],guidance:"Use Purview to classify and label CUI data. Apply sensitivity labels restricting sharing and export. Use Private Endpoints to keep data flows off the public internet.",example:"Apply a CUI-Controlled sensitivity label blocking external sharing with encryption enforced. Use Purview DLP to alert on CUI leaving approved boundaries.",examNote:"AZ-104 covers Private Endpoint creation and DNS integration under Virtual Networking, and storage access controls under Storage."},
+  {id:"AC.L2-3.1.5",level:2,domain:"Access Control",practice:"Employ the principle of least privilege including for specific security functions",az104:["Identities & Governance"],azure:["Azure RBAC","Privileged Identity Management","Entra ID Access Reviews"],guidance:"Assign minimum permissions needed. Audit and remove unused role assignments regularly via Access Reviews. All privileged roles activated through PIM only.",example:"Run monthly Access Reviews on Owner and Contributor assignments. Remove inactive users. Require PIM activation with justification for all admin roles.",examNote:"AZ-104 Identities & Governance includes managing RBAC, configuring PIM, and setting up Access Reviews for role recertification."},
+  {id:"IA.L1-3.5.1",level:1,domain:"Identification & Authentication",practice:"Identify system users, processes acting on behalf of users, and devices",az104:["Identities & Governance"],azure:["Microsoft Entra ID","Managed Identities","Azure AD B2B"],guidance:"Every user, service, and device needs a unique Entra ID identity. Use Managed Identities for Azure services instead of storing credentials. Federate external users via B2B.",example:"Create a Managed Identity for your Azure Function to authenticate to Key Vault without storing secrets. Invite contractors as B2B guests — never shared accounts.",examNote:"AZ-104 tests Managed Identity configuration for VMs and App Services, and B2B guest user management under Identities & Governance."},
+  {id:"IA.L1-3.5.2",level:1,domain:"Identification & Authentication",practice:"Authenticate users, processes, and devices before allowing access to systems",az104:["Identities & Governance"],azure:["Microsoft Entra ID","Multifactor Authentication","Conditional Access"],guidance:"Require authentication before granting any access. Enforce MFA for all users accessing CUI systems. Block legacy authentication protocols that bypass MFA.",example:"Create a Conditional Access policy requiring MFA for all users accessing Azure portal and M365. Block all legacy auth protocols via a separate Conditional Access block policy.",examNote:"AZ-104 covers MFA configuration and Conditional Access policy creation under Manage Azure Identities & Governance."},
+  {id:"IA.L2-3.5.3",level:2,domain:"Identification & Authentication",practice:"Use multifactor authentication for local and network access to CUI systems and accounts",az104:["Identities & Governance"],azure:["Entra ID MFA","Conditional Access","FIDO2 Security Keys","Certificate-Based Auth"],guidance:"Enforce MFA across all access paths. Phishing-resistant MFA (FIDO2, certificate-based) preferred for privileged users. Stricter policies for off-network access.",example:"Require FIDO2 hardware key or certificate-based auth for all privileged users. Require standard MFA for all others. Block access entirely if MFA is unavailable.",examNote:"AZ-104 includes configuring authentication methods and Conditional Access policies under Identities & Governance."},
+  {id:"SC.L1-3.13.1",level:1,domain:"System & Comms Protection",practice:"Monitor, control, and protect communications at external boundaries and key internal boundaries",az104:["Networking"],azure:["Azure Firewall","Network Security Groups","Azure DDoS Protection"],guidance:"Deploy Azure Firewall at perimeters to inspect and filter traffic. Use NSGs for subnet-level inbound/outbound rules. Enable DDoS Protection on public-facing resources.",example:"Deploy Azure Firewall Premium in hub VNet with threat intelligence filtering. Configure NSGs to deny all inbound except approved IP ranges and required ports.",examNote:"AZ-104 Virtual Networking domain covers NSG creation and rule management, Azure Firewall deployment, and DDoS protection plan configuration."},
+  {id:"SC.L1-3.13.2",level:1,domain:"System & Comms Protection",practice:"Employ architectural designs, software development techniques, and systems engineering principles promoting security",az104:["Networking"],azure:["Azure Virtual Network","Private Endpoints","Azure Bastion","Network Subnets"],guidance:"Segment using VNets and subnets. Place CUI workloads in isolated subnets with no public IPs. Use Private Endpoints for PaaS. Use Bastion for secure admin access.",example:"Deploy CUI workloads in a dedicated subnet with no public IPs. Access VMs only via Azure Bastion. Connect to Storage and SQL Database via Private Endpoints only.",examNote:"AZ-104 covers VNet and subnet design, Private Endpoint creation, Azure Bastion deployment — all core Virtual Networking exam skills."},
+  {id:"SC.L2-3.13.8",level:2,domain:"System & Comms Protection",practice:"Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI during transmission",az104:["Networking","Storage"],azure:["TLS 1.2+ Enforcement","Azure VPN Gateway","ExpressRoute","Azure Storage Encryption"],guidance:"Enforce TLS 1.2 or higher on all data in transit. Disable older TLS versions on all Azure services. Use VPN Gateway or ExpressRoute for hybrid connectivity.",example:"Set minimum TLS 1.2 on Storage accounts and App Service. Apply Azure Policy to deny resources allowing TLS 1.0 or 1.1. Use VPN Gateway with IKEv2 for hybrid connections.",examNote:"AZ-104 covers VPN Gateway configuration and ExpressRoute concepts under Virtual Networking, and storage encryption settings under Storage."},
+  {id:"AU.L2-3.3.1",level:2,domain:"Audit & Accountability",practice:"Create and retain system audit logs and records to enable monitoring, analysis, investigation, and reporting",az104:["Monitor"],azure:["Log Analytics Workspace","Microsoft Sentinel","Azure Monitor","Diagnostic Settings"],guidance:"Enable Diagnostic Settings on all resources forwarding to Log Analytics. Deploy Sentinel for SIEM. Set retention to 90-day minimum hot, 365-day archive for CUI systems.",example:"Enable Diagnostic Settings on all subscriptions via Azure Policy. Connect Entra ID sign-in logs, Activity logs, and Defender alerts to Sentinel workspace. Set 1-year retention.",examNote:"AZ-104 Monitor domain covers creating Log Analytics workspaces, configuring Diagnostic Settings, and setting up Azure Monitor alerts."},
+  {id:"AU.L2-3.3.2",level:2,domain:"Audit & Accountability",practice:"Ensure individual users can be uniquely traced to their actions on organizational systems",az104:["Monitor","Identities & Governance"],azure:["Entra ID Audit Logs","Azure Activity Log","Microsoft Sentinel"],guidance:"All actions must trace to a unique identity. Prohibit shared accounts entirely. Capture sign-in and audit logs in Entra ID. Forward to Sentinel for correlation.",example:"Enable Entra ID audit and sign-in logging to Log Analytics. Create Sentinel analytics rules alerting on impossible travel, anonymous IP sign-ins, and bulk downloads.",examNote:"AZ-104 covers Activity Log configuration and Log Analytics queries under Monitor. Sign-in log review is tested under Identities & Governance."},
+  {id:"CM.L2-3.4.1",level:2,domain:"Configuration Management",practice:"Establish and maintain baseline configurations and inventories of organizational systems",az104:["Identities & Governance","Monitor"],azure:["Azure Policy","Microsoft Defender for Cloud","Azure Blueprints","Defender CSPM"],guidance:"Use Azure Policy initiatives to enforce baseline configs. Track compliance via Defender for Cloud Secure Score. Use Blueprints for repeatable governance deployments.",example:"Assign CIS Azure Foundations Benchmark policy initiative to all subscriptions. Use Defender CSPM to identify deviations. Package governance artifacts in Azure Blueprints.",examNote:"AZ-104 covers Azure Policy assignment and compliance reporting under Identities & Governance, and Monitor covers resource health and alerts."},
+  {id:"CM.L2-3.4.2",level:2,domain:"Configuration Management",practice:"Establish and enforce security configuration settings for technology products employed in organizational systems",az104:["Identities & Governance"],azure:["Azure Policy","Microsoft Defender for Cloud","Guest Configuration Extension"],guidance:"Enforce configuration settings using Azure Policy deny effects. Use Guest Configuration to audit VM OS settings. Enable auto-remediation for common misconfigurations.",example:"Deny policy preventing storage accounts with public blob access. Guest Configuration audits Windows VMs for password complexity. Auto-remediate public IP exposure findings.",examNote:"AZ-104 Identities & Governance tests Azure Policy effects (audit, deny, deployIfNotExists) and initiative assignment at subscription scope."},
+  {id:"IR.L2-3.6.1",level:2,domain:"Incident Response",practice:"Establish an operational incident-handling capability for organizational systems",az104:["Monitor"],azure:["Microsoft Sentinel","Microsoft Defender XDR","Azure Logic Apps"],guidance:"Build IR workflows using Sentinel playbooks (Logic Apps). Configure automated triage and notification. Integrate Defender XDR for endpoint and identity incident data.",example:"Sentinel automation rule triggers Logic App on high-severity incidents — notifies team in Teams, creates ServiceNow ticket, and isolates endpoint via Defender for Endpoint.",examNote:"AZ-104 Monitor covers Azure Monitor alert rules and action groups, which form the alert foundation that Sentinel builds on for incident automation."},
+  {id:"IR.L2-3.6.2",level:2,domain:"Incident Response",practice:"Track, document, and report incidents to designated officials and authorities",az104:["Monitor"],azure:["Microsoft Sentinel","Azure Monitor Workbooks","Log Analytics Workspace"],guidance:"Use Sentinel incidents for tracking and assignment. Build Monitor Workbooks for reporting dashboards. Retain incident records per policy requirements.",example:"Use Sentinel incident management to assign, triage, and close incidents. Build a Monitor Workbook showing monthly incidents by severity, MITRE tactic, and time-to-close.",examNote:"AZ-104 Monitor domain includes creating Azure Monitor Workbooks and querying Log Analytics — skills directly applicable to incident reporting."},
+  {id:"MP.L2-3.8.1",level:2,domain:"Media Protection",practice:"Protect system media containing CUI, both paper and digital",az104:["Storage"],azure:["Azure Storage Encryption","Azure Disk Encryption","Customer-Managed Keys","Azure Key Vault"],guidance:"All CUI storage must be encrypted at rest. Azure Storage encryption is enabled by default. Use Customer-Managed Keys in Key Vault for higher assurance. Enable purge protection.",example:"Enable CMK encryption on all Storage accounts holding CUI using keys in a dedicated Key Vault with RBAC-only access. Enable soft delete and purge protection on Key Vault.",examNote:"AZ-104 Storage domain covers Azure Storage encryption settings, access key management, and SAS token configuration for securing storage resources."},
+  {id:"RA.L2-3.11.1",level:2,domain:"Risk Assessment",practice:"Periodically assess the risk to organizational operations, assets, and individuals",az104:["Monitor"],azure:["Microsoft Defender for Cloud","Defender CSPM","Azure Secure Score","Azure Advisor"],guidance:"Use Defender CSPM for continuous risk assessment. Review Secure Score regularly. Schedule quarterly risk reviews using Defender recommendations as the tracking basis.",example:"Configure Defender for Cloud to send weekly Secure Score email report. Use CSPM dashboard to prioritize high-severity recommendations. Export findings to Log Analytics.",examNote:"AZ-104 Monitor domain covers Azure Advisor recommendations and resource health — the administrative foundation for ongoing risk visibility."},
+  {id:"SA.L2-3.12.1",level:2,domain:"Security Assessment",practice:"Periodically assess the security controls in organizational systems to determine effectiveness",az104:["Identities & Governance","Monitor"],azure:["Microsoft Defender for Cloud","Azure Policy Compliance","Defender for Cloud Apps"],guidance:"Assess controls via Defender for Cloud compliance dashboards. Use Azure Policy compliance reports to identify gaps. Export reports to document findings for auditors.",example:"Run monthly compliance assessment using NIST SP 800-171 policy initiative in Defender for Cloud. Export the compliance report PDF for C3PAO auditor documentation.",examNote:"AZ-104 covers Azure Policy compliance reporting under Identities & Governance and Monitor covers interpreting compliance dashboards and resource health."},
+  {id:"PE.L1-3.10.1",level:1,domain:"Physical Protection",practice:"Limit physical access to organizational systems, equipment, and operating environments to authorized individuals",az104:["Identities & Governance"],azure:["Azure Datacenters (Microsoft-managed)","Microsoft Entra ID","Azure Policy"],guidance:"Microsoft manages physical security of Azure datacenters under shared responsibility. Document logical controls that complement and extend physical access controls for hybrid environments.",example:"Reference Microsoft SOC 2 and ISO 27001 attestations for datacenter physical security. For on-premises components connected to Azure, enforce Entra ID for logical access control.",examNote:"AZ-104 Identities & Governance covers subscription and resource governance — the logical access layer that sits on top of the physical access controls Microsoft manages."}
+];
+
+const SERVICES = [
+  {name:"Microsoft Entra ID",category:"Identity",icon:"ti-users",desc:"Cloud identity and access management platform. The backbone of Zero Trust in Azure — every authentication and authorization decision flows through it.",keyFacts:["Supports MFA, SSPR, passwordless, and phishing-resistant authentication methods","Provides the Conditional Access policy engine for granular access decisions","Issues tokens for all Azure, M365, and connected SaaS services","Audit and sign-in logs retained and queryable via Log Analytics"],az104:"Identities & Governance — user and group management, B2B guests, authentication methods",controls:["AC.L1-3.1.1","AC.L1-3.1.2","IA.L1-3.5.1","IA.L1-3.5.2","IA.L2-3.5.3","AU.L2-3.3.2","PE.L1-3.10.1"]},
+  {name:"Conditional Access",category:"Identity",icon:"ti-lock",desc:"Policy engine inside Entra ID that makes access decisions based on signals — user identity, device state, location, application, and real-time risk. The enforcement point for Zero Trust.",keyFacts:["Enforce MFA based on user risk, sign-in risk, location, or device compliance","Block all legacy authentication protocols that bypass MFA requirements","Require compliant or Entra ID-joined devices before granting access","Integrate with Microsoft Entra ID Protection for risk-based policies"],az104:"Identities & Governance — Conditional Access policy creation and troubleshooting",controls:["AC.L1-3.1.1","AC.L1-3.1.2","IA.L1-3.5.2","IA.L2-3.5.3"]},
+  {name:"Azure RBAC",category:"Identity",icon:"ti-key",desc:"Role-Based Access Control for Azure resources. Assign who can do what on which resources using built-in or custom roles scoped to management groups, subscriptions, resource groups, or individual resources.",keyFacts:["Over 100 built-in roles — prefer these before creating custom roles","Scope assignments as narrowly as possible — subscription → RG → resource","Deny assignments can block permissions even when inherited from above","Access Reviews enable periodic recertification of all role assignments"],az104:"Identities & Governance — RBAC role assignment, custom roles, scope management",controls:["AC.L1-3.1.1","AC.L1-3.1.2","AC.L2-3.1.5","IA.L1-3.5.1"]},
+  {name:"Privileged Identity Management",category:"Identity",icon:"ti-crown",desc:"Just-in-time privileged access management for Entra ID and Azure roles. Eliminates standing privileged access and provides approval workflows, time limits, and full audit trails.",keyFacts:["Activate privileged roles on-demand with configurable time limits (1–8 hours typical)","Require MFA and business justification for every privileged role activation","Full audit log of all activations, approvals, and denials","Access Reviews built in for periodic recertification of privileged role membership"],az104:"Identities & Governance — PIM configuration, role activation, Access Reviews",controls:["AC.L1-3.1.2","AC.L2-3.1.5","IA.L2-3.5.3"]},
+  {name:"Log Analytics",category:"Monitoring",icon:"ti-database",desc:"Central log storage and query engine for Azure Monitor. All security telemetry flows here. Uses Kusto Query Language (KQL) to search, analyze, and visualize data from across your environment.",keyFacts:["Data retention configurable — default 30 days, extendable to 730 days","Azure Activity Log events only retained 90 days without Log Analytics — always connect it","KQL enables powerful threat hunting, investigation, and compliance queries","Used as the data store backing Microsoft Sentinel SIEM"],az104:"Monitor & Maintain — Log Analytics workspace creation, KQL queries, retention settings",controls:["AU.L2-3.3.1","AU.L2-3.3.2","IR.L2-3.6.2","RA.L2-3.11.1"]},
+  {name:"Microsoft Sentinel",category:"Monitoring",icon:"ti-radar",desc:"Cloud-native SIEM and SOAR platform. Ingests logs from across your Azure environment, runs KQL-based analytics rules to detect threats, and automates incident response via Logic Apps playbooks.",keyFacts:["Built on Log Analytics workspace — all data queryable via KQL","200+ pre-built data connectors for Entra ID, Defender, M365, AWS, and more","Analytics rules detect threats and create incidents automatically","Automation rules trigger Logic App playbooks for SOAR workflows"],az104:"Monitor & Maintain — builds on Log Analytics; Logic Apps integration covered under Compute",controls:["AU.L2-3.3.1","AU.L2-3.3.2","IR.L2-3.6.1","IR.L2-3.6.2"]},
+  {name:"Microsoft Defender for Cloud",category:"Security",icon:"ti-shield",desc:"Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP). Continuously assesses your environment against security benchmarks and provides a prioritized Secure Score.",keyFacts:["Maps to CIS Benchmarks, NIST SP 800-53, PCI-DSS, ISO 27001, and more","Secure Score aggregates your posture — each recommendation shows exact point impact","Defender CSPM adds attack path analysis and cloud security graph","Auto-provisioning deploys Log Analytics agents and Defender sensors across VMs"],az104:"Monitor & Maintain — Defender for Cloud is tested for VM protection and security recommendations",controls:["CM.L2-3.4.1","CM.L2-3.4.2","RA.L2-3.11.1","SA.L2-3.12.1"]},
+  {name:"Azure Policy",category:"Governance",icon:"ti-file-check",desc:"Governance service that creates, assigns, and manages policy definitions across your Azure environment. Enforce rules at scale — audit non-compliance, deny changes, or auto-remediate drift.",keyFacts:["Audit effect — logs non-compliant resources without blocking creation","Deny effect — prevents resource creation or modification that violates policy","DeployIfNotExists — automatically deploys missing configurations on new resources","Policy initiatives group related policies into compliance packages (e.g. CIS Benchmark)"],az104:"Identities & Governance — Azure Policy assignment, initiative creation, compliance reporting",controls:["AC.L1-3.1.2","CM.L2-3.4.1","CM.L2-3.4.2","SA.L2-3.12.1","SC.L2-3.13.8"]},
+  {name:"Azure Firewall",category:"Network",icon:"ti-flame",desc:"Managed, cloud-native stateful network security service. Provides application and network-level filtering, threat intelligence-based blocking, and FQDN filtering for outbound traffic.",keyFacts:["Premium tier adds IDPS, TLS inspection, URL filtering, and web category filtering","Threat intelligence feed blocks known malicious IPs and FQDNs automatically","Centrally managed across multiple VNets using Azure Firewall Policy","Deploy in a hub VNet for hub-and-spoke architectures — recommended pattern"],az104:"Virtual Networking — Azure Firewall deployment, Firewall Policy, routing configuration",controls:["SC.L1-3.13.1"]},
+  {name:"Network Security Groups",category:"Network",icon:"ti-network",desc:"Virtual firewall applied at the subnet or network interface (NIC) level. Controls inbound and outbound traffic using stateful, priority-based security rules.",keyFacts:["Apply at subnet level (recommended) or individual NIC level for finer control","Security rules evaluated by priority — lower number processed first, first match wins","Default rules deny all inbound from internet and allow all outbound — override as needed","NSG Flow Logs capture all allowed and denied traffic for analysis in Network Watcher"],az104:"Virtual Networking — NSG creation, rule configuration, association to subnets and NICs",controls:["SC.L1-3.13.1","SC.L1-3.13.2"]},
+  {name:"Azure Virtual Network",category:"Network",icon:"ti-topology-star",desc:"Isolated, private network in Azure. The foundation of network segmentation — use VNets and subnets to separate workloads and control traffic flow between resources.",keyFacts:["VNets are fully isolated by default — no internet access without explicit gateway or public IP","Subnets logically segment resources within a VNet for security and traffic control","VNet peering connects VNets within or across regions with low latency","Plan address space (CIDR) carefully — overlapping ranges block peering"],az104:"Virtual Networking — VNet creation, subnet design, address space planning, peering",controls:["SC.L1-3.13.2"]},
+  {name:"Private Endpoints",category:"Network",icon:"ti-plug",desc:"Bring PaaS services like Storage, SQL Database, and Key Vault onto your private VNet via a private IP address. Completely eliminates public internet exposure for those services.",keyFacts:["Creates a private network interface with a private IP inside your VNet","Disable public network access on the PaaS service after enabling Private Endpoint","Requires a Private DNS Zone to resolve the service name to the private IP internally","Supported for Storage, SQL, Key Vault, Sentinel workspace, ACR, and many more"],az104:"Virtual Networking — Private Endpoint creation, Private DNS Zone integration, DNS resolution",controls:["AC.L2-3.1.3","SC.L1-3.13.2"]},
+  {name:"Azure Bastion",category:"Network",icon:"ti-building-castle",desc:"Fully managed PaaS that provides secure browser-based RDP and SSH access to VMs directly through the Azure portal over TLS port 443. No public IP required on your VMs.",keyFacts:["No public IP on the VM — eliminates direct RDP (3389) and SSH (22) internet exposure","Connects entirely via the browser over HTTPS — no VPN or jump server required","Standard tier adds native client support, IP-based connection, and file transfer","All Bastion sessions are audited — connect/disconnect events logged to Diagnostic Settings"],az104:"Virtual Networking — Azure Bastion deployment and host configuration",controls:["SC.L1-3.13.2"]},
+  {name:"Azure Key Vault",category:"Security",icon:"ti-lock-square",desc:"Centralized secrets, keys, and certificate management service. Store and tightly control access to tokens, passwords, certificates, API keys, and encryption keys used by cloud apps and services.",keyFacts:["Enable soft delete (default on) and purge protection to prevent accidental permanent deletion","Use RBAC model (recommended) or access policies to control who can access which secrets","Enable Diagnostic Settings to capture all access events — required for audit trails","Customer-Managed Keys (CMK) use Key Vault to control encryption for Azure PaaS services"],az104:"Identities & Governance and Storage — Key Vault is tested for secret management and CMK configuration",controls:["MP.L2-3.8.1","IA.L1-3.5.1"]},
+  {name:"Customer-Managed Keys",category:"Security",icon:"ti-key",desc:"Bring Your Own Key (BYOK) capability for Azure services. Store your encryption keys in Azure Key Vault (or Managed HSM) and maintain full control over key lifecycle, rotation, and revocation.",keyFacts:["Available for Azure Storage, SQL Database, Cosmos DB, Azure Disk Encryption, and more","Key revocation immediately and cryptographically prevents access to all encrypted data","Managed HSM provides FIPS 140-2 Level 3 validated hardware for highest assurance","Plan key rotation schedule and automate it — manual rotation is an audit finding risk"],az104:"Storage — encryption at rest, CMK configuration, and Key Vault integration tested in AZ-104",controls:["MP.L2-3.8.1","SC.L2-3.13.8"]},
+  {name:"Microsoft Purview",category:"Compliance",icon:"ti-tags",desc:"Unified data governance and compliance platform. Discover, classify, label, and protect sensitive data across Azure, Microsoft 365, and multi-cloud environments.",keyFacts:["Automated data classification using 100+ built-in sensitive information types","Sensitivity labels enforce encryption, access restrictions, and usage rights persistently","DLP policies detect and block or alert when CUI crosses approved boundaries","Integrates with Defender for Cloud Apps to extend protection to SaaS applications"],az104:"Storage and Identities & Governance — Purview data classification touches both exam domains",controls:["AC.L2-3.1.3"]},
+  {name:"Azure Monitor Workbooks",category:"Monitoring",icon:"ti-chart-bar",desc:"Interactive, parameterized dashboards built directly on Log Analytics data. Create custom security reporting views, compliance posture summaries, and incident trend analysis.",keyFacts:["Query across multiple Log Analytics workspaces in a single Workbook view","Dozens of pre-built security, compliance, and activity Workbook templates available","Export Workbook output to PDF for compliance documentation and audit evidence","Parameters let users filter by time range, subscription, resource group, or severity"],az104:"Monitor & Maintain — Azure Monitor Workbooks are explicitly tested in AZ-104 Monitor domain",controls:["AU.L2-3.3.1","IR.L2-3.6.2","RA.L2-3.11.1"]}
+];
+
+let activeChipA = '', activeChipB = '';
+
+function switchView(v) {
+  document.getElementById('view-a').className = 'view-a' + (v === 'a' ? ' show' : '');
+  document.getElementById('view-b').className = 'view-b' + (v === 'b' ? ' show' : '');
+  document.getElementById('btn-a').className = 'vbtn' + (v === 'a' ? ' active' : '');
+  document.getElementById('btn-b').className = 'vbtn' + (v === 'b' ? ' active' : '');
+  document.getElementById('toolbar-hint').textContent = v === 'a'
+    ? 'Click any control to expand Azure guidance + AZ-104 exam mapping'
+    : 'Click any service to see what it does, key config details, and CMMC controls satisfied';
+}
+
+function init() {
+  document.getElementById('hs1').textContent = CONTROLS.length;
+  document.getElementById('hs2').textContent = CONTROLS.filter(c => c.level === 1).length;
+  document.getElementById('hs3').textContent = CONTROLS.filter(c => c.level === 2).length;
+  document.getElementById('hs4').textContent = SERVICES.length;
+  document.getElementById('hs5').textContent = Object.keys(AZ104_DOMAINS).length;
+
+  const domains = [...new Set(CONTROLS.map(c => c.domain))].sort();
+  const dsel = document.getElementById('dfa');
+  domains.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; dsel.appendChild(o); });
+
+  const az104s = Object.keys(AZ104_DOMAINS);
+  const asel = document.getElementById('aza');
+  az104s.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; asel.appendChild(o); });
+
+  const cats = [...new Set(SERVICES.map(s => s.category))].sort();
+  const csel = document.getElementById('catb');
+  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; csel.appendChild(o); });
+
+  const azureServices = [...new Set(CONTROLS.flatMap(c => c.azure))].sort();
+  const ca = document.getElementById('chips-a');
+  const allA = document.createElement('button'); allA.className = 'chip on'; allA.textContent = 'all services';
+  allA.onclick = () => { activeChipA = ''; ca.querySelectorAll('.chip').forEach(b => b.classList.remove('on')); allA.classList.add('on'); renderA(); };
+  ca.appendChild(allA);
+  azureServices.slice(0, 10).forEach(s => {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = s;
+    b.onclick = () => { activeChipA = s; ca.querySelectorAll('.chip').forEach(x => x.classList.remove('on')); b.classList.add('on'); renderA(); };
+    ca.appendChild(b);
+  });
+
+  const catChips = [...new Set(SERVICES.map(s => s.category))].sort();
+  const cb = document.getElementById('chips-b');
+  const allB = document.createElement('button'); allB.className = 'chip on'; allB.textContent = 'all categories';
+  allB.onclick = () => { activeChipB = ''; cb.querySelectorAll('.chip').forEach(b => b.classList.remove('on')); allB.classList.add('on'); renderB(); };
+  cb.appendChild(allB);
+  catChips.forEach(d => {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = d;
+    b.onclick = () => { activeChipB = d; cb.querySelectorAll('.chip').forEach(x => x.classList.remove('on')); b.classList.add('on'); renderB(); };
+    cb.appendChild(b);
+  });
+
+  renderA(); renderB();
+}
+
+function renderA() {
+  const q = document.getElementById('qa').value.toLowerCase();
+  const lf = document.getElementById('lfa').value;
+  const df = document.getElementById('dfa').value;
+  const af = document.getElementById('aza').value;
+  let filtered = CONTROLS.filter(c => {
+    if (lf && c.level !== parseInt(lf)) return false;
+    if (df && c.domain !== df) return false;
+    if (af && !c.az104.includes(af)) return false;
+    if (activeChipA && !c.azure.includes(activeChipA)) return false;
+    if (q && !`${c.id} ${c.practice} ${c.domain} ${c.azure.join(' ')} ${c.guidance} ${c.example} ${c.az104.join(' ')} ${c.examNote}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  document.getElementById('rca').textContent = `// ${filtered.length} of ${CONTROLS.length} controls`;
+  const list = document.getElementById('list-a');
+  if (!filtered.length) { list.innerHTML = '<div class="empty"><i class="ti ti-search"></i>No controls match your filters</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(c => {
+    const card = document.createElement('div'); card.className = 'card';
+    const az104Pills = c.az104.map(a => `<span class="az-pill"><i class="ti ti-school"></i>${a}</span>`).join('');
+    card.innerHTML = `<div class="card-head">
+      <span class="badge l${c.level}">${c.id}</span>
+      <div class="card-mid">
+        <div class="card-title">${c.practice}</div>
+        <div class="card-sub">
+          <i class="ti ti-folder"></i>${c.domain}
+          <span style="color:var(--text3)">·</span>
+          Level ${c.level}
+          <span style="color:var(--text3)">·</span>
+          NIST ${c.id.split('-')[1]}
+        </div>
+      </div>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="detail">
+      <div class="dl">azure resources</div>
+      <div class="pills">${c.azure.map(a => `<span class="pill"><i class="ti ti-cloud"></i>${a}</span>`).join('')}</div>
+      <div class="dl">az-104 exam domain</div>
+      <div class="pills">${az104Pills}</div>
+      <div class="dl">implementation guidance</div>
+      <div class="dt">${c.guidance}</div>
+      <div class="dl">real-world example</div>
+      <div class="ex">${c.example}</div>
+      <div class="dl">az-104 exam note</div>
+      <div class="exam-callout">
+        <i class="ti ti-school"></i>
+        <div class="exam-callout-text">
+          <span class="exam-callout-label">exam relevance</span>
+          ${c.examNote}
+        </div>
+      </div>
+    </div>`;
+    card.querySelector('.card-head').onclick = () => card.classList.toggle('open');
+    list.appendChild(card);
+  });
+}
+
+function renderB() {
+  const q = document.getElementById('qb').value.toLowerCase();
+  const cat = document.getElementById('catb').value;
+  let filtered = SERVICES.filter(s => {
+    if (cat && s.category !== cat) return false;
+    if (activeChipB && s.category !== activeChipB) return false;
+    if (q && !`${s.name} ${s.desc} ${s.category} ${s.controls.join(' ')} ${s.keyFacts.join(' ')} ${s.az104}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  document.getElementById('rcb').textContent = `// ${filtered.length} of ${SERVICES.length} Azure services`;
+  const list = document.getElementById('list-b');
+  if (!filtered.length) { list.innerHTML = '<div class="empty"><i class="ti ti-search"></i>No services match your filters</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(s => {
+    const ctrlBadges = s.controls.map(id => {
+      const c = CONTROLS.find(x => x.id === id);
+      if (!c) return `<span class="pill-ctrl">${id}</span>`;
+      return `<span class="pill-ctrl l${c.level}" style="cursor:pointer" onclick="jumpToControl('${id}')">${id}</span>`;
+    }).join('');
+    const card = document.createElement('div'); card.className = 'card';
+    card.innerHTML = `<div class="card-head">
+      <div class="svc-icon"><i class="ti ${s.icon}"></i></div>
+      <div class="card-mid">
+        <div class="card-title">${s.name}</div>
+        <div class="card-sub">
+          <i class="ti ti-tag"></i>${s.category}
+          <span style="color:var(--text3)">·</span>
+          ${s.controls.length} CMMC control${s.controls.length !== 1 ? 's' : ''}
+        </div>
+      </div>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="detail">
+      <div class="dl">what it does</div>
+      <div class="dt">${s.desc}</div>
+      <div class="dl">key configuration details</div>
+      <div>${s.keyFacts.map(f => `<div class="key-item"><i class="ti ti-circle-check"></i>${f}</div>`).join('')}</div>
+      <div class="dl">az-104 exam relevance</div>
+      <div class="exam-callout">
+        <i class="ti ti-school"></i>
+        <div class="exam-callout-text">
+          <span class="exam-callout-label">exam domain</span>
+          ${s.az104}
+        </div>
+      </div>
+      <div class="dl">cmmc controls satisfied — click to jump</div>
+      <div class="pills" style="margin-top:4px">${ctrlBadges}</div>
+    </div>`;
+    card.querySelector('.card-head').onclick = () => card.classList.toggle('open');
+    list.appendChild(card);
+  });
+}
+
+function jumpToControl(id) {
+  switchView('a');
+  document.getElementById('qa').value = id;
+  renderA();
+  setTimeout(() => {
+    const cards = document.getElementById('list-a').querySelectorAll('.card');
+    if (cards[0]) { cards[0].classList.add('open'); cards[0].scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }, 100);
+}
+
+init();
+</script>
+</body>
+</html>
