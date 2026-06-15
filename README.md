@@ -12,7 +12,8 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 ├── docs/
 │   ├── overview.md                  # CMMC & AZ-104 background
 │   ├── how-to-use.md                # How to use this mapping
-│   └── azure-services-reference.md  # Quick reference of relevant Azure services
+│   ├── azure-services-reference.md  # Quick reference of relevant Azure services
+│   └── demonstrating-compliance.md  # Evidence & artifacts to prove each control
 ├── mappings/
 │   ├── level1/                      # CMMC Level 1 (17 practices)
 │   │   ├── AC-access-control.md
@@ -72,6 +73,7 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 - **Studying for AZ-104?** → Start with [docs/how-to-use.md](docs/how-to-use.md) and use the CSVs in `/csv/` to find which exam topics align with each CMMC control.
 - **Implementing CMMC compliance in Azure?** → Browse `/mappings/` by the relevant CMMC domain and level.
 - **Quick lookup?** → Use the CSV files — they are searchable and filterable.
+- **Preparing for an assessment?** → See [docs/demonstrating-compliance.md](docs/demonstrating-compliance.md) for the evidence and artifacts that prove each control is met.
 
 ---
 
