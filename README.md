@@ -38,18 +38,17 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 │       ├── AC-access-control.md
 │       ├── AT-awareness-training.md
 │       ├── AU-audit-accountability.md
-│       ├── CA-assessment-authorization.md
+│       ├── CA-security-assessment.md
 │       ├── CM-configuration-management.md
 │       ├── IA-identification-authentication.md
 │       ├── IR-incident-response.md
 │       ├── MA-maintenance.md
 │       ├── MP-media-protection.md
-│       ├── PE-physical-protection.md
 │       ├── PS-personnel-security.md
 │       ├── RA-risk-assessment.md
-│       ├── CA-security-assessment.md
 │       ├── SC-system-communications-protection.md
 │       └── SI-system-information-integrity.md
+│       # (PE Physical Protection practices: see level1/PE + CSVs)
 ├── csv/
 │   ├── cmmc-level1-az104-mapping.csv
 │   └── cmmc-level2-az104-mapping.csv
