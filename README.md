@@ -22,6 +22,8 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 ├── README.md                        # This file
 ├── docs/
 │   ├── overview.md                  # CMMC & AZ-104 background
+│   ├── cmmc-program-summary.md      # Official CMMC program summary (levels, rules, dates)
+│   ├── nist-800-171.md              # NIST SP 800-171 — the standard behind Level 2
 │   ├── how-to-use.md                # How to use this mapping
 │   ├── for-auditors.md              # Assessment workflow for auditors/assessors
 │   ├── demonstrating-compliance.md  # Evidence & artifacts to prove each control
@@ -65,10 +67,13 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 
 ## Quick Reference: CMMC Levels
 
-| Level | Name | Practices | Aligned Standard |
-|-------|------|-----------|-----------------|
-| Level 1 | Foundational | 17 | FAR 52.204-21 |
-| Level 2 | Advanced | 110 | NIST SP 800-171 |
+| Level | Name | Practices | Aligned Standard | Assessment |
+|-------|------|-----------|-----------------|------------|
+| Level 1 | Foundational | 17 | FAR 52.204-21 | Annual self-assessment |
+| Level 2 | Advanced | 110 | NIST SP 800-171 Rev 2 | Self-assessment or C3PAO (triennial) |
+| Level 3 | Expert | 110 + NIST SP 800-172 subset | NIST SP 800-171 + 800-172 | DoD-led (DIBCAC) |
+
+*CMMC Program rule (32 CFR Part 170) effective Dec 16, 2024; DFARS acquisition rule effective Nov 10, 2025. See [docs/cmmc-program-summary.md](docs/cmmc-program-summary.md) for details.*
 
 ---
 
@@ -86,6 +91,7 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 
 ## How to Navigate
 
+- **New to CMMC?** → Read [docs/cmmc-program-summary.md](docs/cmmc-program-summary.md) (program, levels, rules, dates) and [docs/nist-800-171.md](docs/nist-800-171.md) (the standard behind Level 2).
 - **Auditing or assessing an environment?** → Start with [docs/for-auditors.md](docs/for-auditors.md), then work from [`audit/assessment-tracker.csv`](audit/assessment-tracker.csv) and log gaps in [`audit/poam-template.csv`](audit/poam-template.csv).
 - **Need to prove a control is met?** → See [docs/demonstrating-compliance.md](docs/demonstrating-compliance.md) for the exact evidence and artifacts per control.
 - **Implementing CMMC compliance in Azure?** → Browse `/mappings/` by the relevant CMMC domain and level.
