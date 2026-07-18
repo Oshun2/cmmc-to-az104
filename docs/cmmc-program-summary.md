@@ -27,9 +27,11 @@ CMMC moves the DIB from **self-attestation** toward **verified compliance**, add
 
 | Level | Name | Requirements | Based On | Assessment |
 |-------|------|-------------|----------|------------|
-| **Level 1** | Foundational | 15 basic safeguarding requirements (enumerated as **17 practices** in this repo) | FAR 52.204-21 | **Annual self-assessment** + annual affirmation |
+| **Level 1** | Foundational | **15** basic safeguarding requirements | FAR 52.204-21, items (i)–(xv) | **Annual self-assessment** + annual affirmation |
 | **Level 2** | Advanced | **110 security requirements** | **NIST SP 800-171 Revision 2** | **Self-assessment** *or* **C3PAO** certification (triennial), depending on the information — plus annual affirmation |
 | **Level 3** | Expert | 110 (Level 2) **+ a subset of NIST SP 800-172** | NIST SP 800-171 R2 + NIST SP 800-172 | **DoD-led** (DIBCAC); requires a Level 2 **Final** certification first |
+
+> **Note on "15 vs 17" for Level 1:** Under **CMMC 2.0**, Level 1 is the **15** basic safeguarding requirements of FAR 52.204-21, items (i)–(xv). Older material citing **17 practices** refers to the retired **CMMC 1.0** model, which enumerated the same FAR requirements differently. This repository uses **15**.
 
 ### Assessment authorities
 - **Level 1 → Self.** The contractor performs an annual self-assessment and affirms compliance in SPRS.

@@ -29,7 +29,7 @@ az graph query -q "Resources | project name, type, resourceGroup, subscriptionId
 ```
 
 ### 2. Select the control set
-- **Level 1** → 17 practices (FAR 52.204-21). Annual self-assessment.
+- **Level 1** → 15 practices (FAR 52.204-21). Annual self-assessment.
 - **Level 2** → 110 practices (NIST SP 800-171). Triennial C3PAO or self-assessment.
 
 Open `audit/assessment-tracker.csv` and filter the **Level** column to your scope.

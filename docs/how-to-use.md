@@ -4,7 +4,7 @@
 
 1. **Identify your CMMC level** — Level 1 (FCI only) or Level 2 (CUI handling).
 2. **Navigate to the appropriate mappings folder**:
-   - `mappings/level1/` for CMMC Level 1 (17 practices)
+   - `mappings/level1/` for CMMC Level 1 (15 practices)
    - `mappings/level2/` for CMMC Level 2 (110 practices)
 3. **Open the domain file** relevant to the control you want to implement (e.g., `AC-access-control.md` for Access Control).
 4. **Follow the Azure implementation guidance** for each practice, including:

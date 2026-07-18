@@ -29,7 +29,7 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 │   ├── demonstrating-compliance.md  # Evidence & artifacts to prove each control
 │   └── azure-services-reference.md  # Quick reference of relevant Azure services
 ├── mappings/
-│   ├── level1/                      # CMMC Level 1 (17 practices)
+│   ├── level1/                      # CMMC Level 1 (15 practices)
 │   │   ├── AC-access-control.md
 │   │   ├── IA-identification-authentication.md
 │   │   ├── MP-media-protection.md
@@ -58,7 +58,8 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 │   ├── assessment-tracker.csv       # Fillable per-practice assessment worksheet
 │   └── poam-template.csv            # Plan of Action & Milestones template
 ├── scripts/
-│   └── build_assessment_tracker.py  # Regenerates the tracker from the mapping CSVs
+│   ├── build_assessment_tracker.py  # Regenerates the tracker from the mapping CSVs
+│   └── validate.py                  # Consistency checks (run in CI)
 └── assets/
     └── cmmc-az104-overview-diagram.md
 ```
@@ -69,7 +70,7 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 
 | Level | Name | Practices | Aligned Standard | Assessment |
 |-------|------|-----------|-----------------|------------|
-| Level 1 | Foundational | 17 | FAR 52.204-21 | Annual self-assessment |
+| Level 1 | Foundational | 15 | FAR 52.204-21 | Annual self-assessment |
 | Level 2 | Advanced | 110 | NIST SP 800-171 Rev 2 | Self-assessment or C3PAO (triennial) |
 | Level 3 | Expert | 110 + NIST SP 800-172 subset | NIST SP 800-171 + 800-172 | DoD-led (DIBCAC) |
 
@@ -97,6 +98,22 @@ This repository maps **Cybersecurity Maturity Model Certification (CMMC) 2.0** c
 - **Implementing CMMC compliance in Azure?** → Browse `/mappings/` by the relevant CMMC domain and level.
 - **Studying for AZ-104?** → Start with [docs/how-to-use.md](docs/how-to-use.md) and use the CSVs in `/csv/` to find which exam topics align with each CMMC control.
 - **Quick lookup?** → Use the CSV files — they are searchable and filterable.
+
+---
+
+## Maintaining This Repository
+
+The practice data is validated on every push by [`.github/workflows/validate.yml`](.github/workflows/validate.yml):
+
+```bash
+# Verify counts, IDs, required fields, and tracker sync
+python3 scripts/validate.py
+
+# Regenerate the assessment tracker after editing the mapping CSVs
+python3 scripts/build_assessment_tracker.py
+```
+
+The validator enforces **15 Level 1** and **110 Level 2** practices, rejects duplicate or malformed practice IDs, requires a NIST reference and Azure service for every practice, and fails if `audit/assessment-tracker.csv` has drifted out of sync with the CSVs.
 
 ---
 

@@ -8,7 +8,7 @@ The **Cybersecurity Maturity Model Certification (CMMC) 2.0** is a framework dev
 
 | Level | Name | Target | Practices | Assessment |
 |-------|------|--------|-----------|------------|
-| 1 | Foundational | All DoD contractors handling FCI | 17 | Annual self-assessment |
+| 1 | Foundational | All DoD contractors handling FCI | 15 | Annual self-assessment |
 | 2 | Advanced | Contractors handling CUI | 110 (NIST SP 800-171) | Triennial third-party (C3PAO) or self-assessment |
 | 3 | Expert | Critical programs / highest CUI | 110+ (NIST SP 800-172) | Triennial government-led |
 
