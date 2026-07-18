@@ -4,6 +4,14 @@ This guide explains how to use this repository to **conduct or prepare for a CMM
 
 > **AZ-104 is just one lens.** The exam-domain columns help administrators connect controls to skills they're learning, but every mapping, CSV, and evidence example works as a standalone CMMC-to-Azure compliance reference. Ignore the AZ-104 columns if they aren't useful to you.
 
+> [!IMPORTANT]
+> **Verify commands before use.** The Azure CLI examples in this repository are
+> illustrative references, not tested scripts, and the control mappings reflect
+> common implementation patterns rather than a specific environment. Never mark a
+> control as Met based on this repository alone — validate against the assessed
+> organization's actual configuration and current
+> [Microsoft documentation](https://learn.microsoft.com/cli/azure/).
+
 ---
 
 ## What This Repository Gives an Auditor

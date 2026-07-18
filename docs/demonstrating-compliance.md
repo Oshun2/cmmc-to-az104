@@ -4,6 +4,14 @@ Mapping a control to an Azure service is only half the job. To **pass a CMMC ass
 
 ---
 
+> [!IMPORTANT]
+> **Verify commands before use.** The Azure CLI and KQL examples below are
+> illustrative references to show *how* evidence is gathered — they are not
+> tested scripts. CLI syntax, policy definition IDs, and service capabilities
+> change over time. Validate every command in a non-production subscription
+> against current [Microsoft documentation](https://learn.microsoft.com/cli/azure/)
+> before relying on its output as assessment evidence.
+
 ## How CMMC Assessors Evaluate Controls
 
 A C3PAO (Certified Third-Party Assessment Organization) assesses each practice using **three methods** (from NIST SP 800-171A):

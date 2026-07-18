@@ -9,6 +9,15 @@
 
 ---
 
+> [!IMPORTANT]
+> **Verify commands before use.** The Azure CLI and KQL examples below are
+> illustrative references to show *how* a control is implemented — they are not
+> tested deployment scripts. CLI syntax, policy definition IDs, and service
+> capabilities change over time. Validate every command in a non-production
+> subscription against current
+> [Microsoft documentation](https://learn.microsoft.com/cli/azure/) before
+> relying on it for compliance work.
+
 ## PE.L1-3.10.1 — Limit Physical Access
 
 **Control Description:**  

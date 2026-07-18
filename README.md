@@ -119,7 +119,16 @@ The validator enforces **15 Level 1** and **110 Level 2** practices, rejects dup
 
 ## Disclaimer
 
-This mapping is provided for educational and reference purposes. CMMC assessments must be conducted by a C3PAO (Certified Third-Party Assessment Organization). This guide does not constitute official compliance certification or legal advice.
+> [!IMPORTANT]
+> **Commands are illustrative, not tested.** The Azure CLI and KQL examples throughout this repository demonstrate *how* a control is typically implemented. They have not been executed against a live tenant. CLI syntax, built-in policy definition IDs, and service capabilities change over time — **validate every command in a non-production subscription** against current [Microsoft documentation](https://learn.microsoft.com/cli/azure/) before using it.
+
+**Additional limitations:**
+
+- **Not a certification.** This repository is a reference and working aid. It does not constitute official compliance certification, an authorized assessment, or legal advice.
+- **Mappings are patterns, not verdicts.** Control-to-service mappings reflect common Azure implementation patterns. Never mark a control as *Met* based on this repository alone — verify against the actual configuration of the system being assessed.
+- **A C3PAO is required.** Formal CMMC Level 2 certification must be performed by an accredited Certified Third-Party Assessment Organization. Level 3 is assessed by the DoD (DIBCAC).
+- **Authoritative sources govern.** Where this repository conflicts with [32 CFR Part 170](https://www.federalregister.gov/documents/2024/10/15/2024-22905/cybersecurity-maturity-model-certification-cmmc-program), the DFARS clauses, NIST SP 800-171/800-171A, or [DoD CIO CMMC guidance](https://dodcio.defense.gov/CMMC/), **those sources control**. Requirements and dates change — confirm current obligations for your specific contract.
+- **Shared Responsibility applies.** Physical and infrastructure controls (notably the PE domain) depend on Microsoft's responsibilities; obtain attestations from the [Microsoft Service Trust Portal](https://servicetrust.microsoft.com/).
 
 ---
 
